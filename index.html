@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Deportations</title>
+    <style>
+        /* Resetting margin, padding, and box-sizing */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #c0392b, #8e44ad);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            animation: backgroundShift 10s infinite alternate;
+            color: white;
+        }
+
+        /* Centering the title (h1) */
+        h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: white;
+            text-align: center;
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            animation: fadeInText 2s ease-in-out;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 255, 255, 0.6), 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Highlighted accepted text box */
+        #accepted {
+            font-size: 5rem;
+            font-weight: bolder;
+            color: white;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            transform: rotate(-20deg);
+            background-color: rgba(255, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            animation: highlight 0.5s ease-out;
+        }
+
+        /* Text highlight effect */
+        @keyframes highlight {
+            0% {
+                transform: scale(1) rotate(-20deg);
+                background-color: rgba(255, 0, 0, 0.7);
+            }
+            100% {
+                transform: scale(1.1) rotate(-20deg);
+                background-color: rgba(255, 69, 0, 0.9);
+            }
+        }
+
+        /* Name floating effect */
+        .floating-name {
+            position: absolute;
+            font-size: 1.5rem;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease, filter 0.3s ease;
+            user-select: none;
+        }
+
+        /* Background shifting animation */
+        @keyframes backgroundShift {
+            0% {
+                background: linear-gradient(135deg, #c0392b, #8e44ad);
+            }
+            50% {
+                background: linear-gradient(135deg, #e74c3c, #9b59b6);
+            }
+            100% {
+                background: linear-gradient(135deg, #f39c12, #d35400);
+            }
+        }
+
+        /* Cool title fade-in effect */
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <!-- Google Font for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <h1>List of Deportations cuz damn trump is prez now</h1>
+    <!-- The 'ACCEPTED!' box -->
+    <div id="accepted">DEPORTED!</div>
+
+    <script>
+        // Function to fetch names from people.txt and display them randomly
+        fetch('people.txt')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('File not found');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Split the data into names and create the floating elements
+                const names = data.split('\n').filter(name => name.trim() !== ''); // Handle any empty lines
+                const acceptedBox = document.getElementById('accepted');
+
+                let currentNames = []; // Store current floating names
+                const h1Height = document.querySelector('h1').offsetHeight; // Get the height of the h1 element
+                const minY = h1Height + 30; // Ensure names don't appear too close to the h1
+
+                // Function to generate random position, avoiding the top area where h1 is
+                function getRandomPosition() {
+                    const x = Math.random() * (window.innerWidth - 150); // Avoid overflow on the right
+                    const y = Math.random() * (window.innerHeight - minY - 150) + minY; // Avoid the area near the h1
+                    return { x, y };
+                }
+
+                // Function to generate random velocity
+                function getRandomVelocity() {
+                    return {
+                        x: (Math.random() - 0.5) * 3, // Random speed in the range of -1.5 to 1.5
+                        y: (Math.random() - 0.5) * 3  // Random speed in the range of -1.5 to 1.5
+                    };
+                }
+
+                // Function to generate random size and angle for 'ACCEPTED!' box
+                function randomizeAcceptedBox() {
+                    const size = Math.random() * 3 + 3; // Random size between 3 and 6 rem (smaller box)
+                    const angle = Math.random() * 360 - 180; // Random angle between -180 and 180 degrees
+                    const x = Math.random() * (window.innerWidth - 200); // Random X position
+                    const y = Math.random() * (window.innerHeight - 200); // Random Y position
+
+                    acceptedBox.style.fontSize = `${size}rem`;
+                    acceptedBox.style.transform = `rotate(${angle}deg)`;
+                    acceptedBox.style.left = `${x}px`;
+                    acceptedBox.style.top = `${y}px`;
+                }
+
+                // Check if the new position collides with existing names
+                function checkCollision(x, y) {
+                    for (let i = 0; i < currentNames.length; i++) {
+                        const name = currentNames[i];
+                        const rect = name.getBoundingClientRect();
+                        if (x < rect.right && x + 150 > rect.left && y < rect.bottom && y + 50 > rect.top) {
+                            return true; // Collision detected
+                        }
+                    }
+                    return false; // No collision
+                }
+
+                // Function to create a new floating name element
+                function createFloatingName(name) {
+                    const nameElement = document.createElement('div');
+                    nameElement.classList.add('floating-name');
+                    nameElement.textContent = name;
+
+                    // Set random initial position and check for collisions
+                    let { x, y } = getRandomPosition();
+                    while (checkCollision(x, y)) {
+                        // If collision detected, generate a new position
+                        ({ x, y } = getRandomPosition());
+                    }
+
+                    nameElement.style.left = `${x}px`;
+                    nameElement.style.top = `${y}px`;
+
+                    // Add velocity for bouncing
+                    let velocity = getRandomVelocity();
+
+                    // Function to update the position of the name box
+                    function updatePosition() {
+                        let rect = nameElement.getBoundingClientRect();
+                        
+                        // Update position based on velocity
+                        x += velocity.x;
+                        y += velocity.y;
+
+                        // Wall collision: bounce off walls
+                        if (x < 0 || x + rect.width > window.innerWidth) velocity.x = -velocity.x; // Reverse X velocity
+                        if (y < minY || y + rect.height > window.innerHeight) velocity.y = -velocity.y; // Reverse Y velocity
+
+                        nameElement.style.left = `${x}px`;
+                        nameElement.style.top = `${y}px`;
+                    }
+
+                    // Move name element
+                    setInterval(updatePosition, 16); // Update position every 16ms for smooth animation
+
+                    // Add click listener for flying effect and highlight
+                    nameElement.addEventListener('click', () => {
+                        nameElement.style.transition = 'transform 0.5s ease-out';
+                        nameElement.style.transform = 'translate(100vw, 100vh) rotate(720deg)';
+                        
+                        acceptedBox.style.display = 'block'; // Show the ACCEPTED box
+                        randomizeAcceptedBox(); // Randomize ACCEPTED box position and size
+
+                        setTimeout(() => {
+                            acceptedBox.style.display = 'none'; // Hide after highlight animation ends
+                        }, 500);
+
+                        // After flying off, remove the name and create a new one
+                        setTimeout(() => {
+                            nameElement.remove();
+                            const newName = names[Math.floor(Math.random() * names.length)];
+                            currentNames.push(newName);
+                            createFloatingName(newName); // Create a new name after one disappears
+                        }, 1500); // Remove name after flying animation
+                    });
+
+                    document.body.appendChild(nameElement);
+                    currentNames.push(nameElement); // Add name element to the list
+                }
+
+                // Create the floating names initially (show up to 20 names)
+                names.slice(0, 10000).forEach(name => {
+                    createFloatingName(name);
+                });
+            })
+            .catch(error => {
+                // If there's an error (e.g., file not found), display a message
+                console.error('Error loading people.txt:', error);
+                alert('Error loading people.txt');
+            });
+    </script>
+</body>
+</html>
