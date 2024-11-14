@@ -394,7 +394,7 @@ Jacob Jones
 Jadyn Jones
 Jayden Dang
 Jayden Oyervidez
-Jeff AKA Victor Lopez
+Jeff
 Jeyla Musa
 Jocelyn Huang
 Joel Santoyo
@@ -425,7 +425,7 @@ Long Nguyen
 Madison Bowden
 Maggie Peus
 Maia Henderson
-Maiya Hobbs AKA Laine
+Laine Hobbs
 Maksym Rajszewski
 Malachi Moody
 Malia Turner
@@ -486,7 +486,7 @@ Sara Garcia Romero
 Sarah Landry
 Sashwath Kathiravan
 Sathyan Gopal
-Seyidina-Alli Oyebode AKA Kanmi
+Kanmi Oyebode
 Shayne Nichols
 Sophie Kuo
 Srilkashminath Madasu
@@ -508,7 +508,7 @@ Vorarit Zhao
 Warren Beauchamp
 William Magueyal Jimenez
 Yanicel Lopez
-Yiyan Chen AKA Ella
+Ella Chen
 Zachary Cheuk
 Zain Ahmad
 Zariah Barnett
@@ -612,7 +612,7 @@ Jacob Jones
 Jadyn Jones
 Jayden Dang
 Jayden Oyervidez
-Jeff AKA Victor Lopez
+Victor Lopez
 Jeyla Musa
 Jocelyn Huang
 Joel Santoyo
@@ -643,7 +643,7 @@ Long Nguyen
 Madison Bowden
 Maggie Peus
 Maia Henderson
-Maiya Hobbs AKA Laine
+Laine Hobbs
 Maksym Rajszewski
 Malachi Moody
 Malia Turner
@@ -704,7 +704,7 @@ Sara Garcia Romero
 Sarah Landry
 Sashwath Kathiravan
 Sathyan Gopal
-Seyidina-Alli Oyebode AKA Kanmi
+Kanmi
 Shayne Nichols
 Sophie Kuo
 Srilkashminath Madasu
@@ -726,7 +726,7 @@ Vorarit Zhao
 Warren Beauchamp
 William Magueyal Jimenez
 Yanicel Lopez
-Yiyan Chen AKA Ella
+Ella Chen
 Zachary Cheuk
 Zain Ahmad
 Zariah Barnett
