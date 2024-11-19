@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List of Deportations</title>
     <style>
-        /* Resetting margin, padding, and box-sizing */
         * {
             margin: 0;
             padding: 0;
@@ -25,7 +24,6 @@
             color: white;
         }
 
-        /* Centering the title (h1) */
         h1 {
             font-size: 3rem;
             font-weight: bold;
@@ -40,7 +38,6 @@
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 255, 255, 0.6), 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
-        /* Highlighted accepted text box */
         #accepted {
             font-size: 5rem;
             font-weight: bolder;
@@ -56,7 +53,6 @@
             animation: highlight 0.5s ease-out;
         }
 
-        /* Text highlight effect */
         @keyframes highlight {
             0% {
                 transform: scale(1) rotate(-20deg);
@@ -68,7 +64,6 @@
             }
         }
 
-        /* Name floating effect */
         .floating-name {
             position: absolute;
             font-size: 1.5rem;
@@ -83,7 +78,6 @@
             font-family: 'Roboto', sans-serif; /* Ensure floating names use Roboto */
         }
 
-        /* Background shifting animation */
         @keyframes backgroundShift {
             0% {
                 background: linear-gradient(135deg, #c0392b, #8e44ad);
@@ -96,7 +90,6 @@
             }
         }
 
-        /* Cool title fade-in effect */
         @keyframes fadeInText {
             0% {
                 opacity: 0;
@@ -108,20 +101,17 @@
             }
         }
     </style>
-    <!-- Google Font for modern look -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <h1>List of Deportations cuz damn trump is prez now</h1>
-    <!-- The 'ACCEPTED!' box -->
     <div id="accepted">DEPORTED!</div>
 
     <script>
-        let currentNames = []; // Store current floating names
-        let allNames = []; // Store all names loaded from the file
+        let currentNames = [];
+        let allNames = [];
 
-        // Function to fetch names from people.txt and display them randomly
         function loadNames() {
             fetch('people.txt')
                 .then(response => {
@@ -131,102 +121,89 @@
                     return response.text();
                 })
                 .then(data => {
-                    console.log('People data:', data); // Check if the data is loaded correctly
-                    allNames = data.split('\n').filter(name => name.trim() !== ''); // Ensure non-empty names
+                    console.log('People data:', data);
+                    allNames = data.split('\n').filter(name => name.trim() !== '');
 
-                    // Start floating the first batch of names
                     startFloatingNames();
                 })
                 .catch(error => {
-                    // If there's an error (e.g., file not found), display a message
                     console.error('Error loading people.txt:', error);
                     alert('Error loading people.txt');
                 });
         }
 
-        // Function to generate random position
         function getRandomPosition() {
-            const x = Math.random() * (window.innerWidth - 150); // Avoid overflow on the right
-            const y = Math.random() * (window.innerHeight - 150) + 100; // Avoid the area near the h1
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150) + 100;
             return { x, y };
         }
 
         // Function to generate random velocity
         function getRandomVelocity() {
             return {
-                x: (Math.random() - 0.5) * 3, // Random speed in the range of -1.5 to 1.5
-                y: (Math.random() - 0.5) * 3  // Random speed in the range of -1.5 to 1.5
+                x: (Math.random() - 0.5) * 3,
+                y: (Math.random() - 0.5) * 3
             };
         }
 
-        // Function to create a new floating name element
         function createFloatingName(name) {
             const nameElement = document.createElement('div');
             nameElement.classList.add('floating-name');
             nameElement.textContent = name;
 
-            // Set random initial position
             let { x, y } = getRandomPosition();
 
             nameElement.style.left = `${x}px`;
             nameElement.style.top = `${y}px`;
 
-            // Add velocity for bouncing
             let velocity = getRandomVelocity();
 
-            // Function to update the position of the name box
             function updatePosition() {
                 let rect = nameElement.getBoundingClientRect();
                 
-                // Update position based on velocity
                 x += velocity.x;
                 y += velocity.y;
 
-                // Wall collision: bounce off walls
-                if (x < 0 || x + rect.width > window.innerWidth) velocity.x = -velocity.x; // Reverse X velocity
-                if (y < 100 || y + rect.height > window.innerHeight) velocity.y = -velocity.y; // Reverse Y velocity
+                if (x < 0 || x + rect.width > window.innerWidth) velocity.x = -velocity.x;
+                if (y < 100 || y + rect.height > window.innerHeight) velocity.y = -velocity.y;
 
                 nameElement.style.left = `${x}px`;
                 nameElement.style.top = `${y}px`;
             }
 
-            // Move name element
-            setInterval(updatePosition, 16); // Update position every 16ms for smooth animation
+            setInterval(updatePosition, 16);
 
-            // Add click listener for flying effect and highlight
             nameElement.addEventListener('click', () => {
                 nameElement.style.transition = 'transform 0.5s ease-out';
                 nameElement.style.transform = 'translate(100vw, 100vh) rotate(720deg)';
                 
                 const acceptedBox = document.getElementById('accepted');
-                acceptedBox.style.display = 'block'; // Show the ACCEPTED box
-                randomizeAcceptedBox(); // Randomize ACCEPTED box position and size
+                acceptedBox.style.display = 'block';
+                randomizeAcceptedBox();
 
                 setTimeout(() => {
-                    acceptedBox.style.display = 'none'; // Hide after highlight animation ends
+                    acceptedBox.style.display = 'none';
                 }, 500);
 
-                // After flying off, remove the name and create a new one
                 setTimeout(() => {
                     nameElement.remove();
-                    currentNames = currentNames.filter(n => n !== nameElement); // Remove from current list
+                    currentNames = currentNames.filter(n => n !== nameElement);
                     if (currentNames.length === 0) {
-                        startFloatingNames(); // If all names are gone, load new ones
+                        startFloatingNames();
                     }
-                }, 1500); // Remove name after flying animation
+                }, 1500);
             });
 
             document.body.appendChild(nameElement);
-            currentNames.push(nameElement); // Add name element to the list
+            currentNames.push(nameElement);
         }
 
-        // Function to randomize accepted box position and size
         function randomizeAcceptedBox() {
             const acceptedBox = document.getElementById('accepted');
-            const size = Math.random() * 3 + 3; // Random size between 3 and 6 rem (smaller box)
-            const angle = Math.random() * 360 - 180; // Random angle between -180 and 180 degrees
-            const x = Math.random() * (window.innerWidth - 200); // Random X position
-            const y = Math.random() * (window.innerHeight - 200); // Random Y position
+            const size = Math.random() * 3 + 3;
+            const angle = Math.random() * 360 - 180;
+            const x = Math.random() * (window.innerWidth - 200);
+            const y = Math.random() * (window.innerHeight - 200);
 
             acceptedBox.style.fontSize = `${size}rem`;
             acceptedBox.style.transform = `rotate(${angle}deg)`;
@@ -234,7 +211,6 @@
             acceptedBox.style.top = `${y}px`;
         }
 
-        // Start floating the first batch of names (up to 20)
         function startFloatingNames() {
             const shuffledNames = allNames.sort(() => Math.random() - 0.5);
             shuffledNames.slice(0, 20).forEach(name => {
@@ -242,7 +218,6 @@
             });
         }
 
-        // Load names when the page is ready
         loadNames();
     </script>
 </body>
